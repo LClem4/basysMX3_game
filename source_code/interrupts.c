@@ -23,6 +23,7 @@
 
 
 extern char player_sprite;
+extern int score;
 void init_timer5()
 {
   PR5 = (int)(((float)(TMR_TIME * PB_FRQ) / 256) + 0.5);   //set period register, generates one interrupt every 300 us                     //             set period register, generates one interrupt every 300 us
@@ -66,7 +67,7 @@ void init_timer2(int frequency)
 //    PR2 = SYS_FREQ / 2 / frequency / 8;
     PR2 = (int)(((float)(TMR_TIME * PB_FRQ) / 256) + 0.5);
     // Set up the pre-scaler
-    T2CONbits.TCKPS = 0b010; // Pre-scale of 8
+    T2CONbits.TCKPS = 0b000; // Pre-scale of 8
 
     IFS0bits.T2IF = 0;  // Clear interrupt flag for timer 2
     IPC2bits.T2IP = 3;  // Interrupt priority 3
@@ -91,7 +92,7 @@ void __attribute__((vector(_TIMER_1_VECTOR), interrupt(ipl3soft), nomips16)) tim
 {
     IFS0bits.T1IF = 0;
     TMR1 = 0x000;
-    toggle_LED(0);
+    
     if(PORTBbits.RB1){
        if(player_sprite > 0){
           player_sprite--; 
@@ -101,7 +102,6 @@ void __attribute__((vector(_TIMER_1_VECTOR), interrupt(ipl3soft), nomips16)) tim
        } 
     }
     else if(PORTAbits.RA15){
-       toggle_LED(0);
        if(player_sprite < 7){
           player_sprite++; 
        }
@@ -109,13 +109,14 @@ void __attribute__((vector(_TIMER_1_VECTOR), interrupt(ipl3soft), nomips16)) tim
           player_sprite = 0;
        } 
     }
+ 
 }
 
 void __attribute__((vector(_TIMER_5_VECTOR), interrupt(ipl3soft), nomips16)) timer5_handler()
 {
     IFS0bits.T5IF = 0;
     TMR5 = 0;
-    toggle_LED(5);
+  
 }
 
 
@@ -123,10 +124,8 @@ void __attribute__((vector(_TIMER_2_VECTOR), interrupt(ipl3soft), nomips16)) tim
 //void  __ISR(_TIMER_2_VECTOR, IPL7SRS) timer2_handler()
 {
     IFS0bits.T2IF = 0;  // Clear interrupt flag for timer 2
-    TMR2    = 0;
-    toggle_LED(2);
-    toggle_LED(7);
-    
+    TMR2    = 0xffff;
+    display_num(score,1);
     
 //    RHO = ! RHO;
     //LATGINV = 1 << 0;   // Toggle pin RH0

@@ -70,3 +70,15 @@ void init_sprite_player(){
      LCD_WriteBytesAtPosCgram(player_bot, 8, posCgramChar4);
 }
 
+void init_sprite_explosion() {
+    char big_explosion[] = {0x04,0x15,0x0A,0x11,0x0A,0x15,0x04,0x00};
+     LCD_WriteBytesAtPosCgram(big_explosion,8, posCgramChar1);
+     
+     char mid_explosion[] = {0x00,0x0A,0x04,0x1B,0x04,0x0A,0x00,0x00};
+     LCD_WriteBytesAtPosCgram(mid_explosion, 8, posCgramChar2);
+     
+     char small_explosion[] = {0x00,0x00,0x04,0x0A,0x04,0x00,0x00,0x00};
+     LCD_WriteBytesAtPosCgram(small_explosion, 8, posCgramChar3);
+     
+}
+
